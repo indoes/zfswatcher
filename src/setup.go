@@ -22,14 +22,15 @@
 package main
 
 import (
-	"gopkg.in/gcfg.v1"
 	"errors"
 	"fmt"
-	"github.com/damicon/zfswatcher/notifier"
-	"github.com/ogier/pflag"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/damicon/zfswatcher/notifier"
+	"github.com/ogier/pflag"
+	"gopkg.in/gcfg.v1"
 )
 
 // Config file processing.
@@ -113,17 +114,13 @@ type cfgType struct {
 		Devstatecssclassmap  stringToStringMap
 		Usedstatecssclassmap severityToWwwClassMap
 	}
-	Wwwuser map[string]*struct {
-		Enable   bool
-		Password string
-	}
 	Chassis struct {
-		Enable							bool
-		Chassis45drives15		bool
-		Chassis45drives30		bool
-		Chassis45drives45l  bool
-		Chassis45drives45		bool
-		Chassis45drives60		bool
+		Enable             bool
+		Chassis45drives15  bool
+		Chassis45drives30  bool
+		Chassis45drives45l bool
+		Chassis45drives45  bool
+		Chassis45drives60  bool
 	}
 }
 
@@ -322,7 +319,6 @@ func setup() {
 	// command line flags:
 	pflag.StringVarP(&cfgFile, "conf", "c", CFGFILE, "configuration file path")
 	pflag.BoolVarP(&optDebug, "debug", "d", false, "print debug information to stdout")
-	optHashPassword := pflag.BoolP("passwordhash", "P", false, "hash web password")
 	optTest := pflag.BoolP("test", "t", false, "test configuration and exit")
 	optVersion := pflag.BoolP("version", "v", false, "print version information and exit")
 
@@ -334,10 +330,6 @@ func setup() {
 	}
 	if *optVersion {
 		version()
-		os.Exit(0)
-	}
-	if *optHashPassword {
-		wwwHashPassword()
 		os.Exit(0)
 	}
 
