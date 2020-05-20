@@ -1,5 +1,11 @@
+%{!?_version: %define _version 0.4.6 }
+%global gittag %{_version}
+
+# Uncomment below to automatically fetch source tarball from github
+#%undefine _disable_source_fetch
+
 Name:		zfswatcher
-Version:	%{version}
+Version:	%{_version}
 Release:	1%{?dist}
 Summary:	ZFS pool monitoring and notification daemon
 
@@ -8,7 +14,8 @@ License:	GPLv3+
 Vendor:		Damicon Kraa Oy <http://www.damicon.fi/>
 Packager:	Rouben <rouben@rouben.net>
 URL:		http://zfswatcher.damicon.fi/
-Source0:	%{name}-%{version}.tar.gz
+#Source0:	%{name}-%{version}.tar.gz
+Source0:	https://github.com/indoes/%{name}/archive/%{gittag}/%{name}-%{version}.tar.gz 
 ExclusiveArch:	x86_64
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -23,7 +30,8 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 %define		group %{name}
 
 #BuildRequires:	# Go 1.0.3
-#BuildRequires:		systemd
+BuildRequires:  golang >= 1.0.3
+BuildRequires:		systemd
 Requires:		zfs
 Requires(pre):		/usr/sbin/useradd, /usr/sbin/groupadd, /usr/bin/getent
 Requires(postun):	/usr/sbin/userdel, /usr/sbin/groupdel
@@ -40,6 +48,7 @@ with the following main features:
  * Web interface for displaying status and logs.
 
 %prep
+%autosetup -n %{name}-%{gittag}
 %setup -q
 
 
@@ -88,14 +97,14 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %post
-%systemd_post %{unit}
+%systemd_post %{name}.service
 
 
 %preun
-%systemd_preun %{unit}
+%systemd_preun %{name}.service
 
 
 %postun
-%systemd_postun %{unit}
+%systemd_postun %{name}.service
 /usr/sbin/userdel %{name}
 /usr/sbin/groupdel %{name}
